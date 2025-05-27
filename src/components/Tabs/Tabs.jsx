@@ -1,4 +1,6 @@
 export const Tabs = ({ tabs, activeTabId, onTabSelected }) => {
+  const validTab = tabs.find(tab => tab.id === activeTabId) || tabs[0];
+
   return (
     <div data-cy="TabsComponent">
       <div className="tabs is-boxed">
@@ -6,12 +8,13 @@ export const Tabs = ({ tabs, activeTabId, onTabSelected }) => {
           {tabs.map(tab => (
             <li
               key={tab.id}
-              className={activeTabId === tab.id ? 'is-active' : ''}
+              className={tab.id === validTab.id ? 'is-active' : ''}
               data-cy="Tab"
             >
               <a
-                onClick={() => {
-                  if (tab.id === activeTabId) return;
+                onClick={event => {
+                  event.preventDefault();
+                  if (tab.id === validTab.id) return;
                   onTabSelected(tab.id);
                 }}
                 href={`#${tab.id}`}
@@ -25,9 +28,7 @@ export const Tabs = ({ tabs, activeTabId, onTabSelected }) => {
       </div>
 
       <div className="block" data-cy="TabContent">
-        {!activeTabId
-          ? tabs[0].content
-          : tabs.map(tab => (activeTabId === tab.id ? tab.content : ''))}
+        {validTab.content}
       </div>
     </div>
   );
